@@ -17,10 +17,9 @@ class ZerlegungRBK : IAlarmExtractor {
         data["nef"] = getNumberOfNEF(params[5])
         data["sonderrechte"] = params[6]
         data["district"] = getDistrict(params[8])
-        data[EAlarmDataEntries.CITY.key] = params[7]
-        data[EAlarmDataEntries.STREET.key] = "${params[9]} ${params[10]} ${params[11]}"
-        data["address_number"] = params[10]
-        data[EAlarmDataEntries.LOCATION_ADDITIOnAL.key] = params[11]
+        data[EAlarmDataEntries.CITY.key] = getCity(params[7])
+        data[EAlarmDataEntries.STREET.key] = "${params[9]}"
+        data[EAlarmDataEntries.HOUSE.key] = "${params[10]}${params[11]}"
         data["floor"] = params[12]
         data["abschnitt"] = params[13]
         data[EAlarmDataEntries.BUILDING_NAME.key] = params[14]
@@ -30,6 +29,19 @@ class ZerlegungRBK : IAlarmExtractor {
         data[EAlarmDataEntries.TEXT.key] = params[18]
 
         return data
+    }
+
+    private fun getCity(city: String): String {
+        if (city.length > 3) {
+            return city
+        }
+        return when(city) {
+            "RÖS" -> "Rösrath"
+            "KÜR" -> "Kürten"
+            "WRM" -> "Wermelskirchen"
+            "BGL" -> "Bergisch Gladbach"
+            else -> city
+        }
     }
 
     private fun getDistrict(s: String): String {
