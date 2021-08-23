@@ -92,5 +92,9 @@ public class ZerlegungRBKTest {
 		assertEquals("Schlange im Keller", map.get(EAlarmDataEntries.TEXT.getKey()));
 		assertEquals("", map.get("rtw"));
 		assertEquals("", map.get("nef"));
+
+		msg = "Einsatz abbrechen ";
+		map = impl.extract(msg);
+		assertEquals("Einsatz abbrechen ", map.get(EAlarmDataEntries.TEXT.getKey()));
 	}
 }
