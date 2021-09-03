@@ -93,6 +93,41 @@ public class ZerlegungRBKTest {
 		assertEquals("", map.get("rtw"));
 		assertEquals("", map.get("nef"));
 
+		msg = ";F 1111;H-VU LKW;S3;;;;BAB 3;;A3->Oberhausen;5;;; Raststätte Königsforst Ost->Königsforst Abfahrt;;;;;;";
+		map = impl.extract(msg);
+		assertEquals("F 1111", map.get("alarm_number"));
+		assertEquals("H-VU LKW", map.get("keyword"));
+		assertEquals("", map.get("sonderrechte"));
+		assertEquals("BAB 3", map.get(EAlarmDataEntries.CITY.getKey()));
+		assertEquals("", map.get("district"));
+		assertEquals("A3->Oberhausen", map.get(EAlarmDataEntries.STREET.getKey()));
+		assertEquals("Km 5", map.get(EAlarmDataEntries.HOUSE.getKey()));
+		assertEquals("", map.get("floor"));
+		assertEquals("", map.get(EAlarmDataEntries.BUILDING_NAME.getKey()));
+		assertEquals("", map.get("bma_number"));
+		assertEquals(" Raststätte Königsforst Ost->Königsforst Abfahrt", map.get("abschnitt"));
+		assertEquals("", map.get(EAlarmDataEntries.TEXT.getKey()));
+		assertEquals("", map.get("rtw"));
+		assertEquals("", map.get("nef"));
+
+
+		msg = ";F 8797;H-VU;S1;;;;RÖS;;L170;;;;;;;;;;";
+		map = impl.extract(msg);
+		assertEquals("F 8797", map.get("alarm_number"));
+		assertEquals("H-VU", map.get("keyword"));
+		assertEquals("", map.get("sonderrechte"));
+		assertEquals("Rösrath", map.get(EAlarmDataEntries.CITY.getKey()));
+		assertEquals("", map.get("district"));
+		assertEquals("L170", map.get(EAlarmDataEntries.STREET.getKey()));
+		assertEquals("", map.get(EAlarmDataEntries.HOUSE.getKey()));
+		assertEquals("", map.get("floor"));
+		assertEquals("", map.get(EAlarmDataEntries.BUILDING_NAME.getKey()));
+		assertEquals("", map.get("bma_number"));
+		assertEquals("", map.get("abschnitt"));
+		assertEquals("", map.get(EAlarmDataEntries.TEXT.getKey()));
+		assertEquals("", map.get("rtw"));
+		assertEquals("", map.get("nef"));
+
 		msg = "Einsatz abbrechen ";
 		map = impl.extract(msg);
 		assertEquals("Einsatz abbrechen ", map.get(EAlarmDataEntries.TEXT.getKey()));

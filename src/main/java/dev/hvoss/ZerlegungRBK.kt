@@ -19,8 +19,8 @@ class ZerlegungRBK : IAlarmExtractor {
             data["sonderrechte"] = params[6]
             data["district"] = getDistrict(params[8])
             data[EAlarmDataEntries.CITY.key] = getCity(params[7])
-            data[EAlarmDataEntries.STREET.key] = "${params[9]}"
-            data[EAlarmDataEntries.HOUSE.key] = "${params[10]}${params[11]}"
+            data[EAlarmDataEntries.STREET.key] = params[9]
+            data[EAlarmDataEntries.HOUSE.key] = getHouseNumberOrBABKm(params[7], params[10], params[11])
             data["floor"] = params[12]
             data["abschnitt"] = params[13]
             data[EAlarmDataEntries.BUILDING_NAME.key] = params[14]
@@ -39,6 +39,13 @@ class ZerlegungRBK : IAlarmExtractor {
         return data
     }
 
+    private fun getHouseNumberOrBABKm(city: String, number: String, additional: String): String {
+        if (city.startsWith("BAB")) {
+            return "Km $number"
+        }
+        return number+additional
+    }
+
     private fun getCity(city: String): String {
         if (city.length > 3) {
             return city
@@ -53,10 +60,12 @@ class ZerlegungRBK : IAlarmExtractor {
     }
 
     private fun getDistrict(s: String): String {
-        if (s.contains("/")) {
-            return s.split("/").last()
+        return if (s.contains("/")) {
+            s.split("/").last()
         } else {
-            return s
+            s.ifBlank {
+                "NRW"
+            }
         }
     }
 
