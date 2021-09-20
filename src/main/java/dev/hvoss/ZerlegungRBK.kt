@@ -3,6 +3,8 @@ package dev.hvoss
 import de.alamos.fe2.external.interfaces.IAlarmExtractor
 import java.util.HashMap
 import de.alamos.fe2.external.enums.EAlarmDataEntries
+import io.jenetics.jpx.GPX
+import java.util.NoSuchElementException
 
 class ZerlegungRBK : IAlarmExtractor {
 
@@ -28,6 +30,20 @@ class ZerlegungRBK : IAlarmExtractor {
             data["bma_number"] = params[16]
             data["einsatzplan"] = params[17]
             data[EAlarmDataEntries.TEXT.key] = params[18]
+            if (data[EAlarmDataEntries.BUILDING_NAME.key]?.startsWith("Rett-Punkt") == true) {
+                val gpx = GPX.reader(GPX.Version.V11).read(javaClass.classLoader.getResourceAsStream("resources/KWF_RP_V2_10_DE.gpx"))
+                val rescuePointString = data[EAlarmDataEntries.BUILDING_NAME.key]?.removePrefix("Rett-Punkt ")
+                rescuePointString?.let { rescuePointString ->
+                try {
+                        val listOfMatchingWaypoints = gpx.wayPoints.filter { it.name.get().equals(rescuePointString) }
+                        data[EAlarmDataEntries.LAT.key] = listOfMatchingWaypoints.first().latitude.toString()
+                        data[EAlarmDataEntries.LNG.key] = listOfMatchingWaypoints.first().longitude.toString()
+                    } catch (noSuchElementException: NoSuchElementException) {
+                        System.out.println("Could not find rescue point: $rescuePointString ")
+                        System.out.println(noSuchElementException)
+                    }
+                }
+            }
         } catch (indexOutOfBounds: IndexOutOfBoundsException) {
             System.out.println("Less parameters than expected!")
             System.out.println(indexOutOfBounds)
