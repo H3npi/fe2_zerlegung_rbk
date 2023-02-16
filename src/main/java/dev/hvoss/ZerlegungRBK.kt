@@ -1,20 +1,23 @@
 package dev.hvoss
 
-import de.alamos.fe2.external.interfaces.IAlarmExtractor
-import java.util.HashMap
+import de.alamos.fe2.external.ExtractorObject
 import de.alamos.fe2.external.enums.EAlarmDataEntries
+import de.alamos.splitting.api.AbstractAlarmExtractorV2
 import io.jenetics.jpx.GPX
-import java.util.NoSuchElementException
 
-class ZerlegungRBK : IAlarmExtractor {
+class ZerlegungRBK : AbstractAlarmExtractorV2() {
+    override fun extractFromMap(map: MutableMap<String, String>?): ExtractorObject {
 
-    override fun extract(input: String): Map<String, String> {
-
+        val input = map?.get(EAlarmDataEntries.TEXT.key) ?: ""
         val data: MutableMap<String, String> = HashMap()
+
+        val extractorObject = ExtractorObject()
 
         val params = input.split(";")
         try {
             data["alarm_number"] = params[1]
+            data[EAlarmDataEntries.EXTERNAL_ID.key] = params[1]
+            data["v2_Id"] = params[1]
             data[EAlarmDataEntries.KEYWORD.key] = params[2]
             data["rtw"] = getNumberOfRTW(params[5])
             data["nef"] = getNumberOfNEF(params[5])
@@ -31,10 +34,10 @@ class ZerlegungRBK : IAlarmExtractor {
             data["einsatzplan"] = params[17]
             data[EAlarmDataEntries.TEXT.key] = params[18]
             if (data[EAlarmDataEntries.BUILDING_NAME.key]?.startsWith("Rett-Punkt") == true) {
-                val gpx = GPX.reader(GPX.Version.V11).read(javaClass.classLoader.getResourceAsStream("resources/KWF_RP_V2_10_DE.gpx"))
+                val gpx = GPX.reader(GPX.Version.V11).read(javaClass.classLoader.getResourceAsStream("KWF_RP_V2_10_DE.gpx"))
                 val rescuePointString = data[EAlarmDataEntries.BUILDING_NAME.key]?.removePrefix("Rett-Punkt ")
                 rescuePointString?.let { rescuePointString ->
-                try {
+                    try {
                         val listOfMatchingWaypoints = gpx.wayPoints.filter { it.name.get().equals(rescuePointString) }
                         data[EAlarmDataEntries.LAT.key] = listOfMatchingWaypoints.first().latitude.toString()
                         data[EAlarmDataEntries.LNG.key] = listOfMatchingWaypoints.first().longitude.toString()
@@ -49,10 +52,12 @@ class ZerlegungRBK : IAlarmExtractor {
             System.out.println(indexOutOfBounds)
             System.out.println("Using just text")
             data[EAlarmDataEntries.TEXT.key] = input
+            data[EAlarmDataEntries.KEYWORD.key] = "Alarm"
         }
 
-
-        return data
+        extractorObject.data = data
+        extractorObject.isComplete = true
+        return extractorObject
     }
 
     private fun getHouseNumberOrBABKm(city: String, number: String, additional: String): String {
