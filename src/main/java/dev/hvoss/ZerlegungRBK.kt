@@ -51,8 +51,8 @@ class ZerlegungRBK : AbstractAlarmExtractorV2() {
             System.out.println("Less parameters than expected!")
             System.out.println(indexOutOfBounds)
             System.out.println("Using just text")
-            data[EAlarmDataEntries.TEXT.key] = input
-            data[EAlarmDataEntries.KEYWORD.key] = "Alarm"
+            data[EAlarmDataEntries.TEXT.key] += input
+            data["error"] = indexOutOfBounds.toString()
         }
 
         extractorObject.data = data
