@@ -16,9 +16,10 @@ class ZerlegungRBK : AbstractAlarmExtractorV2() {
         val params = input.split(";")
         try {
             data["alarm_number"] = params[1]
-            data[EAlarmDataEntries.EXTERNAL_ID.key] = params[1]
+            data["externalId"] = params[1]
             data["v2_Id"] = params[1]
             data[EAlarmDataEntries.KEYWORD.key] = params[2]
+            data["alarm_tier"] = params[3]
             data["rtw"] = getNumberOfRTW(params[5])
             data["nef"] = getNumberOfNEF(params[5])
             data["sonderrechte"] = params[6]
@@ -51,6 +52,7 @@ class ZerlegungRBK : AbstractAlarmExtractorV2() {
             System.out.println("Less parameters than expected!")
             System.out.println(indexOutOfBounds)
             System.out.println("Using just text")
+            indexOutOfBounds.printStackTrace()
             data[EAlarmDataEntries.TEXT.key] += input
             data["error"] = indexOutOfBounds.toString()
         }
