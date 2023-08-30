@@ -152,4 +152,17 @@ public class ZerlegungV2ExampleTest {
 		assertEquals("1", data.get("nef"));
 	}
 
+	@Test
+	public void testVoralarm() {
+		ZerlegungRBK v2Example = new ZerlegungRBK();
+
+		Map<String, String> map = new HashMap<>();
+		map.put(EAlarmDataEntries.TEXT.getKey(), "nullVoralarm,           zeitkritischer      Einsatz!            --                  BGL Stadtmitte");
+
+		ExtractorObject object = v2Example.extractFromMap(map);
+		Map<String, String> data = object.getData();
+
+		assertEquals("Voralarm, zeitkritischer Einsatz! -- BGL Stadtmitte", data.get(EAlarmDataEntries.TEXT.getKey()));
+	}
+
 }
