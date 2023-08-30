@@ -61,6 +61,7 @@ class ZerlegungRBK : AbstractAlarmExtractorV2() {
             input = input.replace("\\s+".toRegex(), " ")
             data[EAlarmDataEntries.TEXT.key] = input
             data["prealarm"] = true.toString()
+            data[EAlarmDataEntries.KEYWORD.key] = "Voralarm"
         }
 
 

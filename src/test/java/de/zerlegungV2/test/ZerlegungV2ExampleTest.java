@@ -163,6 +163,7 @@ public class ZerlegungV2ExampleTest {
 		Map<String, String> data = object.getData();
 
 		assertEquals("Voralarm, zeitkritischer Einsatz! -- BGL Stadtmitte", data.get(EAlarmDataEntries.TEXT.getKey()));
+		assertEquals("Voralarm", data.get("keyword"));
 	}
 
 }
