@@ -86,6 +86,7 @@ class ZerlegungRBK : AbstractAlarmExtractorV2() {
             "KÜR" -> "Kürten"
             "WRM" -> "Wermelskirchen"
             "BGL" -> "Bergisch Gladbach"
+            "OVE" -> "Overath"
             else -> city
         }
     }
